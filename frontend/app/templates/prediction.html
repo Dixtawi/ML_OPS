@@ -5,7 +5,8 @@
 {% block content %}
     <div class="container mt-5">
         <h2>House Price Prediction</h2>
-        <form method="POST" action="/prediction">
+        <div class="content-container">
+        <form method="POST" action="/prediction" class="form-container">
             <div class="form-group">
                 <label for="area">Area (sq ft):</label>
                 <input type="number" class="form-control" id="area" name="area" min="0" required>
@@ -96,7 +97,7 @@
 
 
         {% if predicted_price %}
-        <div class="mt-4">
+        <div class="price-container mt-4">
             <h3>Predicted Price: {{ predicted_price }} $</h3>
             <p>For the house with the following attributes:</p>
             <ul>
@@ -104,16 +105,17 @@
                 <li>Bedrooms: {{ input_data['bedrooms'] }}</li>
                 <li>Bathrooms: {{ input_data['bathrooms'] }}</li>
                 <li>Stories: {{ input_data['stories'] }}</li>
-                <li>Mainroad: {{ 'Yes' if input_data['mainroad'] == 1 else 'No' }}</li>
-                <li>Guestroom: {{ 'Yes' if input_data['guestroom'] == 1 else 'No' }}</li>
-                <li>Basement: {{ 'Yes' if input_data['basement'] == 1 else 'No' }}</li>
-                <li>Hotwater Heating: {{ 'Yes' if input_data['hotwaterheating'] == 1 else 'No' }}</li>
-                <li>Airconditioning: {{ 'Yes' if input_data['airconditioning'] == 1 else 'No' }}</li>
+                <li>Mainroad: {{ 'Yes' if input_data['mainroad']}}</li>
+                <li>Guestroom: {{ 'Yes' if input_data['guestroom']}}</li>
+                <li>Basement: {{ 'Yes' if input_data['basement']}}</li>
+                <li>Hotwater Heating: {{ 'Yes' if input_data['hotwaterheating']}}</li>
+                <li>Airconditioning: {{ 'Yes' if input_data['airconditioning']}}</li>
                 <li>Parkings: {{ input_data['parking'] }}</li>
-                <li>Prefarea: {{ 'Yes' if input_data['prefarea'] == 1 else 'No' }}</li>
+                <li>Prefarea: {{ 'Yes' if input_data['prefarea']}}</li>
                 <li>Furnishing Status: {{ input_data['furnishingstatus'] }}</li>
             </ul>
         </div>
         {% endif %}
     </div>
+</div>
 {% endblock %}
