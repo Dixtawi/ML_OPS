@@ -3,10 +3,13 @@ import json
 import locale
 from datetime import datetime
 import os
-from instance.config import DEBUG, MODEL_PATH
+from instance.config import MODEL_PATH
+import joblib
+from sklearn.preprocessing import StandardScaler
 
 routes = Blueprint('routes', __name__)
 
+model = joblib.load(MODEL_PATH)
 
 @routes.route('/')
 def home():
@@ -15,48 +18,40 @@ def home():
 @routes.route('/prediction', methods=['GET', 'POST'])
 def prediction():
     if request.method == 'POST':
-        area = request.form['area']
-        bedrooms = request.form['bedrooms']
-        bathrooms = request.form['bathrooms']
-        stories = request.form['stories']
+        area = int(request.form['area'])
+        bedrooms = int(request.form['bedrooms'])
+        bathrooms = int(request.form['bathrooms'])
+        stories = int(request.form['stories'])
         mainroad = 1 if request.form['mainroad'] == 'yes' else 0
         guestroom = 1 if request.form['guestroom'] == 'yes' else 0
         basement = 1 if request.form['basement'] == 'yes' else 0
         hotwaterheating = 1 if request.form['watheat'] == 'yes' else 0
         airconditioning = 1 if request.form['aircond'] == 'yes' else 0
-        parking = request.form['parkings']
+        parking = int(request.form['parkings'])
         prefarea = 1 if request.form['prefarea'] == 'yes' else 0
         furnishingstatus = request.form['furnishingstatus']
         
-        furnishing_map = {'unfurnished': 0, 'semi-furnished': 1, 'furnished': 2}
+        furnishing_map = {'furnished': 0, 'semi-furnished': 1, 'unfurnished': 2}
         furnishingstatus = furnishing_map[furnishingstatus]
 
-        input_data = {
-            'area': area,
-            'bedrooms': bedrooms,
-            'bathrooms': bathrooms,
-            'stories': stories,
-            'mainroad': mainroad,
-            'guestroom': guestroom,
-            'basement': basement,
-            'hotwaterheating': hotwaterheating,
-            'airconditioning': airconditioning,
-            'parking': parking,
-            'prefarea': prefarea,
-            'furnishingstatus': furnishingstatus
-        }
-
-        model = {}
+        input_data = [
+            area,
+            bedrooms,
+            bathrooms,
+            stories,
+            mainroad,
+            guestroom,
+            basement,
+            hotwaterheating,
+            airconditioning,
+            parking,
+            prefarea,
+            furnishingstatus
+        ]
         predicted_price = None
+        print(input_data)
         try:
-            # Exemple de chargement du modèle
-            # with open(MODEL_PATH, 'r') as file:
-            #     model = json.load(file)
-            
-            # Appeler la fonction de prédiction du modèle
-            # predicted_price = model.predict(input_data)
-            
-            predicted_price = 100000  # Placeholder
+            predicted_price = round(model.predict([input_data])[0])
         except Exception as e:
             print(f"Error loading model or predicting: {e}")
         
