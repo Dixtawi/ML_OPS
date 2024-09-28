@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Prediction{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2>House Price Prediction</h2>
+        <div class="content-container">
+        <form method="POST" action="/prediction" class="form-container">
+            <div class="form-group">
+                <label for="area">Area (sq ft):</label>
+                <input type="number" class="form-control" id="area" name="area" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="bedrooms">Number of Bedrooms:</label>
+                <input type="number" class="form-control" id="bedrooms" name="bedrooms" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="bathrooms">Number of Bathrooms:</label>
+                <input type="number" class="form-control" id="bathrooms" name="bathrooms" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="stories">Number of Stories:</label>
+                <input type="number" class="form-control" id="stories" name="stories" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="mainroad">Is connected to Main Road:</label>
+                <div>
+                    <input type="radio" id="mainroad_yes" name="mainroad" value="yes" required>
+                    <label for="mainroad_yes">Yes</label>
+                    <input type="radio" id="mainroad_no" name="mainroad" value="no">
+                    <label for="mainroad_no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="guestroom">Has a guest room:</label>
+                <div>
+                    <input type="radio" id="guestroom_yes" name="guestroom" value="yes" required>
+                    <label for="guestroom_yes">Yes</label>
+                    <input type="radio" id="guestroom_no" name="guestroom" value="no">
+                    <label for="guestroom_no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="basement">Has a basement:</label>
+                <div>
+                    <input type="radio" id="basement_yes" name="basement" value="yes" required>
+                    <label for="basement_yes">Yes</label>
+                    <input type="radio" id="basement_no" name="basement" value="no">
+                    <label for="basement_no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="watheat">Has hotwater heater:</label>
+                <div>
+                    <input type="radio" id="watheat_yes" name="watheat" value="yes" required>
+                    <label for="watheat_yes">Yes</label>
+                    <input type="radio" id="watheat_no" name="watheat" value="no">
+                    <label for="watheat_no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="aircond">Has airconditioning:</label>
+                <div>
+                    <input type="radio" id="aircond_yes" name="aircond" value="yes" required>
+                    <label for="aircond_yes">Yes</label>
+                    <input type="radio" id="aircond_no" name="aircond" value="no">
+                    <label for="aircond_no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="parkings">Number of Parkings:</label>
+                <input type="number" class="form-control" id="parkings" name="parkings" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="prefarea">Prefarea:</label>
+                <div>
+                    <input type="radio" id="prefarea_yes" name="prefarea" value="yes" required>
+                    <label for="prefarea_yes">Yes</label>
+                    <input type="radio" id="prefarea_no" name="prefarea" value="no">
+                    <label for="prefarea_no">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="furnishingstatus">Furnishing Status:</label>
+                <div>
+                    <input type="radio" id="furnishing_semi" name="furnishingstatus" value="semi-furnished" required>
+                    <label for="furnishing_semi">Semi-furnished</label>
+                    <input type="radio" id="furnishing_un" name="furnishingstatus" value="unfurnished">
+                    <label for="furnishing_un">Unfurnished</label>
+                    <input type="radio" id="furnishing_fur" name="furnishingstatus" value="furnished">
+                    <label for="furnishing_fur">Furnished</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Predict</button>
+        </form>
+
+
+        {% if predicted_price %}
+        <div class="price-container mt-4">
+            <h3>Predicted Price: {{ predicted_price }} $</h3>
+            <p>For the house with the following attributes:</p>
+            <ul>
+                <li>Area: {{ input_data['area'] }} sq ft</li>
+                <li>Bedrooms: {{ input_data['bedrooms'] }}</li>
+                <li>Bathrooms: {{ input_data['bathrooms'] }}</li>
+                <li>Stories: {{ input_data['stories'] }}</li>
+                <li>Mainroad: {{ 'Yes' if input_data['mainroad']}}</li>
+                <li>Guestroom: {{ 'Yes' if input_data['guestroom']}}</li>
+                <li>Basement: {{ 'Yes' if input_data['basement']}}</li>
+                <li>Hotwater Heating: {{ 'Yes' if input_data['hotwaterheating']}}</li>
+                <li>Airconditioning: {{ 'Yes' if input_data['airconditioning']}}</li>
+                <li>Parkings: {{ input_data['parking'] }}</li>
+                <li>Prefarea: {{ 'Yes' if input_data['prefarea']}}</li>
+                <li>Furnishing Status: {{ input_data['furnishingstatus'] }}</li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
