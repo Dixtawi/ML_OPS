@@ -1,76 +1,87 @@
-from flask import Blueprint, request, render_template, current_app, url_for, redirect
+from flask import Blueprint, request, render_template, current_app, url_for, redirect, abort
 import json
 import locale
 from datetime import datetime
 import os
 from instance.config import MODEL_PATH
 import joblib
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+import ssl
+from werkzeug.exceptions import BadRequest
 
 routes = Blueprint('routes', __name__)
-print(MODEL_PATH)
 model = joblib.load(MODEL_PATH)
+limiter = Limiter(key_func=get_remote_address, default_limits=["100 per hour"])
 
 @routes.route('/')
+@limiter.limit("10 per minute")
 def home():
     return render_template('prediction.html')
 
-@routes.route('/prediction', methods=['GET', 'POST'])
-def prediction():
-    if request.method == 'POST':
+def validate_input(form_data):
+    try:
+        area = int(form_data['area'])
+        bedrooms = int(form_data['bedrooms'])
+        bathrooms = int(form_data['bathrooms'])
+        stories = int(form_data['stories'])
+        parking = int(form_data['parkings'])
+
         furnishing_map = {'furnished': 0, 'semi-furnished': 1, 'unfurnished': 2}
         strings_map = {'yes': 1, 'no': 0}
-        
-        area = int(request.form['area'])
-        bedrooms = int(request.form['bedrooms'])
-        bathrooms = int(request.form['bathrooms'])
-        stories = int(request.form['stories'])
-        mainroad = strings_map[request.form['mainroad']]
-        guestroom = strings_map[request.form['guestroom']]
-        basement = strings_map[request.form['basement']]
-        hotwaterheating = strings_map[request.form['watheat']]
-        airconditioning = strings_map[request.form['aircond']]
-        parking = int(request.form['parkings'])
-        prefarea = strings_map[request.form['prefarea']]
-        furnishingstatus = furnishing_map[request.form['furnishingstatus']]
-        
 
-        input_data = [
-            area,
-            bedrooms,
-            bathrooms,
-            stories,
-            mainroad,
-            guestroom,
-            basement,
-            hotwaterheating,
-            airconditioning,
-            parking,
-            prefarea,
-            furnishingstatus
-        ]
-        predicted_price = None
+        mainroad = strings_map[form_data['mainroad']]
+        guestroom = strings_map[form_data['guestroom']]
+        basement = strings_map[form_data['basement']]
+        hotwaterheating = strings_map[form_data['watheat']]
+        airconditioning = strings_map[form_data['aircond']]
+        prefarea = strings_map[form_data['prefarea']]
+        furnishingstatus = furnishing_map[form_data['furnishingstatus']]
+
+        return {
+            'area': area,
+            'bedrooms': bedrooms,
+            'bathrooms': bathrooms,
+            'stories': stories,
+            'mainroad': mainroad,
+            'guestroom': guestroom,
+            'basement': basement,
+            'hotwaterheating': hotwaterheating,
+            'airconditioning': airconditioning,
+            'parking': parking,
+            'prefarea': prefarea,
+            'furnishingstatus': furnishingstatus
+        }
+    except (KeyError, ValueError) as e:
+        raise BadRequest(f"Invalid input: {e}")
+
+@routes.route('/prediction', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
+def prediction():
+    if request.method == 'POST':
         try:
-            predicted_price = round(model.predict([input_data])[0])
-            
+            input_data = validate_input(request.form)
+
+            predicted_price = round(model.predict([list(input_data.values())])[0])
+
             input_data_origine = {
-                'area': area,
-                'bedrooms': bedrooms,
-                'bathrooms': bathrooms,
-                'stories': stories,
-                'mainroad': 'yes' if mainroad == 1 else 'no',
-                'guestroom': 'yes' if guestroom == 1 else 'no',
-                'basement': 'yes' if basement == 1 else 'no',
-                'hotwaterheating': 'yes' if hotwaterheating == 1 else 'no',
-                'airconditioning': 'yes' if airconditioning == 1 else 'no',
-                'parking': parking,
-                'prefarea': 'yes' if prefarea == 1 else 'no',
-                'furnishingstatus': [key for key, value in furnishing_map.items() if value == furnishingstatus][0]
+                'area': input_data['area'],
+                'bedrooms': input_data['bedrooms'],
+                'bathrooms': input_data['bathrooms'],
+                'stories': input_data['stories'],
+                'mainroad': 'yes' if input_data['mainroad'] == 1 else 'no',
+                'guestroom': 'yes' if input_data['guestroom'] == 1 else 'no',
+                'basement': 'yes' if input_data['basement'] == 1 else 'no',
+                'hotwaterheating': 'yes' if input_data['hotwaterheating'] == 1 else 'no',
+                'airconditioning': 'yes' if input_data['airconditioning'] == 1 else 'no',
+                'parking': input_data['parking'],
+                'prefarea': 'yes' if input_data['prefarea'] == 1 else 'no',
+                'furnishingstatus': 'furnished' if input_data['furnishingstatus'] == 0 else (
+                    'semi-furnished' if input_data['furnishingstatus'] == 1 else 'unfurnished')
             }
-            
-            input_data = map(input_data, lambda x: str(x))
-        except Exception as e:
-            print(f"Error loading model or predicting: {e}")
-        
+        except BadRequest as e:
+            return render_template('prediction.html', error=str(e))
+
         return render_template('prediction.html', predicted_price=predicted_price, input_data=input_data_origine)
-    else:
-        return render_template('prediction.html')
+
+    return render_template('prediction.html')
