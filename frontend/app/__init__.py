@@ -2,6 +2,7 @@ from flask import Flask
 from .routes import routes
 import os
 import ssl
+from prometheus_flask_exporter import PrometheusMetrics
 
 def create_app():
     app = Flask(__name__)
@@ -10,6 +11,7 @@ def create_app():
     app.config['SESSION_TYPE'] = 'filesystem'
     
     app.register_blueprint(routes)
+    metrics = PrometheusMetrics(app)
     
     context = None
     if not app.debug:
