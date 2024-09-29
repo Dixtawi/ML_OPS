@@ -20,14 +20,15 @@ git clone https://github.com/Dixtawi/ML_OPS
 cd ML_OPS
 
 # Installer les dépendances
-pip install -r requirements.txt
+pip install -r frontend/requirements.txt
 ```
 
 ## Utilisation de l'API
 
 Instruction pour lancer et utiliser l'API
 
-```
+```bash
+cd frontend
 make run
 ```
 
