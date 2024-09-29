@@ -25,13 +25,17 @@ pip install -r requirements.txt
 
 ## Utilisation de l'API
 
-Instruction pour lancer et utiliser l'API
+Instruction pour lancer et utiliser l'API :
 
 ```
 make run
 ```
 
-## Données
+Rendez-vous sur le lien "https://votre_ip:5000". Ce lien est la dernière ligne affichée lorsque vous effectuez "make run".
+
+Une fois sur le site, vous pouvez entrer les informations du logement dans le formulaire pour avoir une prédiction du prix de vente.
+
+## **Données**
 
 Le dataset utilisé dans ce projet provient de [Kaggle](https://www.kaggle.com/datasets/yasserh/housing-prices-dataset) et contient des informations détaillées sur les prix de logements ainsi que sur diverses caractéristiques de ces logements. Ce dataset a été choisi en raison de sa richesse et de sa pertinence pour la tâche de prévision des prix.
 
@@ -64,7 +68,7 @@ Dans ce projet, nous avons utilisé le modèle Gradient Boosting. Ce modèle a �
 
 ### Détail du Modèle
 
-Type de Modèle : Gradient Boosting Regressor
+Type de Modèle : Gradient Boosting
 Objectif : Prévoir les prix de logement en fonction de caractéristiques spécifiques (surface, nombre de chambres, localisation, etc.).
 
 ### Evaluation des performances
