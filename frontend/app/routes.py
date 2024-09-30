@@ -9,10 +9,14 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import ssl
 from werkzeug.exceptions import BadRequest
+from prometheus_client import Summary
+import time
 
 routes = Blueprint('routes', __name__)
 model = joblib.load(MODEL_PATH)
 limiter = Limiter(key_func=get_remote_address, default_limits=["100 per hour"])
+REQUEST_TIME = Summary('api_request_processing_seconds', 'Time spent processing request')
+
 
 @routes.route('/')
 @limiter.limit("10 per minute")
@@ -55,10 +59,17 @@ def validate_input(form_data):
     except (KeyError, ValueError) as e:
         raise BadRequest(f"Invalid input: {e}")
 
+
+
+
+
+@REQUEST_TIME.time()
 @routes.route('/prediction', methods=['GET', 'POST'])
 @limiter.limit("5 per minute")
 def prediction():
     if request.method == 'POST':
+        if request.content_type != 'application/x-www-form-urlencoded':
+            abort(400, description="Bad Request: Content-Type must be application/x-www-form-urlencoded")
         try:
             input_data = validate_input(request.form)
 
