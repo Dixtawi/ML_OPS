@@ -1,17 +1,14 @@
 import unittest
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend', 'app')))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend', 'instance')))
-from routes import routes
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend')))
+from app import *
 from flask import Flask
 
 class APITestCase(unittest.TestCase):
     def setUp(self):
-        self.app = Flask(__name__)
-        self.app.register_blueprint(routes)
+        self.app, context = create_app()
         self.client = self.app.test_client()
-        self.app.config['TESTING'] = True
 
     def test_home_status_code(self):
         """Test que la route d'accueil renvoie un code de statut 200"""
