@@ -14,3 +14,6 @@ clean:
 run:
 	$(PYTHON_INTERPRETER) "instance/run.py"
 
+test:
+	pytest ../test/tests_model.py
+	pytest ../test/tests_api.py
