@@ -1,32 +1,31 @@
 name: CI for Commits
 
-# Le workflow s'exécute lors des commits
+
 on: 
   push:
     branches:
-      - "*"  # S'exécute sur toutes les branches
+      - "*" s
+  pull_request:
+    branches:
+      - "*"
 
 jobs:
   run-tests:
     runs-on: ubuntu-latest
 
     steps:
-      # Étape pour checker le code
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Configurer Python
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
 
-      # Installer les dépendances à partir du requirements.txt
       - name: Install dependencies
         run: |
           pip install -r frontend/requirements.txt
 
-      # Lancer les tests unitaires
       - name: Run tests
         run: |
           pytest tests/
