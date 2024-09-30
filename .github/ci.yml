@@ -4,10 +4,10 @@ name: CI for Commits
 on: 
   push:
     branches:
-      - "*"
+      - '**'
   pull_request:
     branches:
-      - "*"
+      - '**'
 
 jobs:
   run-tests:
