@@ -14,8 +14,8 @@ def create_app():
     metrics = PrometheusMetrics(app)
     
     context = None
-    if not app.debug:
-        context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-        context.load_cert_chain('certificates/cert.pem', 'certificates/key.pem')
+    #if not app.debug:
+    #    context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+    #    context.load_cert_chain('certificates/cert.pem', 'certificates/key.pem')
     
     return app, context
