@@ -15,3 +15,10 @@ def test_predict_price():
     )
 
     print(result)
+
+def test_predict_price_invalid_data():
+    model = joblib.load(MODEL_PATH)
+    features = ['invalid', 4, 4, 4, 1, 0, 0, 0, 1, 3, 0, 0]
+    
+    with pytest.raises(ValueError) as e:
+        model.predict([features])
