@@ -4,7 +4,7 @@ name: CI for Commits
 on: 
   push:
     branches:
-      - "*" s
+      - "*"
   pull_request:
     branches:
       - "*"
