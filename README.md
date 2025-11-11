@@ -4,9 +4,7 @@
 
 ## Introduction
 
-Notre projet
-
-a pour objectif de fournir un modèle de machine learning opérationnel permettant de prédire les prix de l'immobilier à partir de diverses caractéristiques des logements. Ce projet se concentre sur l'aspect opérationnel, en facilitant l'accès aux utilisateurs via une API REST, qui permet d'effectuer des requêtes de prédiction en temps réel.
+Notre projet a pour objectif de fournir un modèle de machine learning opérationnel permettant de prédire les prix de l'immobilier à partir de diverses caractéristiques des logements. Ce projet se concentre sur l'aspect opérationnel, en facilitant l'accès aux utilisateurs via une API REST, qui permet d'effectuer des requêtes de prédiction en temps réel.
 
 Nous avons mis en place des outils de monitoring pour suivre les performances du modèle, ainsi qu'un système d'alerting pour détecter d'éventuels problèmes. Cela garantit une utilisation efficace et fiable du modèle par d'autres utilisateurs.
 
